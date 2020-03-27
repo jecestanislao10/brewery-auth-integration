@@ -15,8 +15,6 @@ class AuthController {
     router.post('/users', this.injector('CreateUser'), this.create);
     router.post('/clients', this.injector('SignupClient'), this.signup);
 
-
-
     return router;
   }
   

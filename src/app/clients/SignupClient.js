@@ -12,7 +12,6 @@ class SignupClient extends Operation {
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
     console.log(data);
-
     /* signup fields:
         email, 
         password, 
@@ -41,9 +40,17 @@ class SignupClient extends Operation {
 
 
     try {
-      const result = await new BreweryAuth(config).signup(data);
+      const auth  = new BreweryAuth(config);
       
-      console.log(result)
+      const result = await auth.signup(data);
+      const { clientId, confirmationCode } = result;
+
+      const confirmation = await auth.signupConfirm({ 
+        clientId, 
+        confirmationCode
+      }, { subject:'The Brewery', text:'Welcome to the brewery' });
+      
+
       return this.emit(SUCCESS, result);
     } catch(error) {
       this.emit(VALIDATION_ERROR, {
