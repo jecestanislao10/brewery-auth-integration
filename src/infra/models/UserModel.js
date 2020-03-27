@@ -2,7 +2,7 @@ const { hashPassword } = require('../encryption/hashPassword');
 
 module.exports = {
   name: 'UserModel',
-  datasource: 'db',
+  datasource: 'test-db',
   definition: function(datasource, DataTypes) {
     const UserModel = datasource.define('UserModel', {
       id : {

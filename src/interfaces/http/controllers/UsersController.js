@@ -14,9 +14,7 @@ class UsersController {
     };
     const router = Router();
 
-    router.post('/login', this.injector('LoginUser'), this.login);
     router.get('/users', this.injector('ListUsers'), this.index);
-    router.post('/users', this.injector('CreateUser'), this.create);
     router.get('/users/:id', this.injector('ShowUser'), this.show);
     router.put('/users/:id', this.injector('UpdateUser'), this.update);      
     router.delete('/users/:id', this.injector('DeleteUser'), this.delete);
@@ -24,30 +22,6 @@ class UsersController {
     return router;
   }
   
-  login(req, res) {
-    const { operation } = req;
-    const { SUCCESS, VALIDATION_ERROR } = operation.events;
-
-    operation
-      .on(SUCCESS, (result) => {
-        res
-          .status(Status.OK)
-          .json({ status: Status.OK, details: { message: 'Logged in successfully!', result: result} }).end();
-      })
-      .on(VALIDATION_ERROR,  (result) => {
-        res
-          .status(Status.UNAUTHORIZED)
-          .json({
-            status: Status.UNAUTHORIZED,
-            type: result.type,
-            details: result.details
-          }).end();
-      });
-
-
-
-    operation.execute(req.body);
-  }
   /**
    * CRUD sample implementation
    * You may delete the commented code below if you have extended BaseController class
@@ -72,16 +46,6 @@ class UsersController {
         });
       })
       .on(ERROR, next);
-    
-    if(req.role.toLowerCase() !== 'admin'){
-      return res
-        .status(Status.FORBIDDEN)
-        .json({
-          status: Status.FORBIDDEN,
-          type: 'AUTHORIZATION ERROR',
-          details: 'Not Authorized'
-        });
-    }
 
     operation.execute();
   }
@@ -106,40 +70,10 @@ class UsersController {
       })
       .on(ERROR, next);
 
-    if(req.role.toLowerCase() !== 'admin'){
-      return res
-        .status(Status.FORBIDDEN)
-        .json({
-          status: Status.FORBIDDEN,
-          type: 'AUTHORIZATION ERROR',
-          details: 'Not Authorized'
-        });
-    }
-
     operation.execute((req.params.id));
   }
 
-  create(req, res, next) {
-    const { operation } = req;
-    const { SUCCESS, ERROR, VALIDATION_ERROR } = operation.events;
 
-    operation
-      .on(SUCCESS, (result) => {
-        res
-          .status(Status.CREATED)
-          .json({ status: Status.CREATED, details: { message: 'User Created!', userId: result.id } });
-      })
-      .on(VALIDATION_ERROR, (error) => {
-        res.status(Status.BAD_REQUEST).json({
-          status: Status.BAD_REQUEST,
-          type: error.type,
-          details: error.details
-        });
-      })
-      .on(ERROR, next);
-
-    operation.execute(req.body);
-  }
 
   update(req, res, next) {
     const { operation } = req;
@@ -200,16 +134,6 @@ class UsersController {
         });
       })
       .on(ERROR, next);
-
-    if(req.role.toLowerCase() !== 'admin'){
-      return res
-        .status(Status.FORBIDDEN)
-        .json({
-          status: Status.FORBIDDEN,
-          type: 'AUTHORIZATION ERROR',
-          details: 'Not Authorized'
-        });
-    }
 
     operation.execute(req.params.id);
   }

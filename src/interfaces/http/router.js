@@ -6,22 +6,34 @@ const methodOverride = require('method-override');
 const controller = require('./utils/createControllerRoutes');
 const path = require('path');
 const openApiDoc = require('./openApi.json');
-const {authorization} = require('ftauth');
-const unless = require('express-unless');
+// const unless = require('express-unless');
+const BreweryAuth = require('brewery-auth-test/src'); 
 
-
-
-module.exports = ({ config, notFound, authenticationMiddleware, containerMiddleware, loggerMiddleware, errorHandler, openApiMiddleware }) => {
+module.exports = ({ config, notFound, containerMiddleware, loggerMiddleware, errorHandler, openApiMiddleware }) => {
   const router = Router();
-  authenticationMiddleware.unless = unless;
 
+  const configurations = {
+    dbConfig: {
+      databaseName: process.env.DB_NAME,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      dialect: process.env.DB_DIALECT,
+      host: process.env.DB_HOST,
+      authSecret: process.env.SECRET1,
+      authSecret2: process.env.SECRET2,
+    },
+    salt: process.env.SALT,
+    nexmoSecret: process.env.NEXMO_API_SECRET,
+    nexmoKey: process.env.NEXMO_API_KEY,
+    sendgridKey: process.env.SENDGRID_API_KEY,
+    senderEmail: process.env.SENDER_EMAIL,
+    senderSms: process.env.SENDER_SMS
+  };
+
+  const auth = new BreweryAuth(configurations);
+  
   router.use(containerMiddleware);
 
-  router.use(authenticationMiddleware.unless({ path: ['/', '/api/login', '/AmberJS.png', '/api/docs', { url: '/api/users', methods: ['POST'] }]}));
-
-  // router.use(tryAuthMid);
-
-  // router.use(authenticationMiddleware);
 
   /* istanbul ignore if */
   if(config.env !== 'test') {
@@ -34,13 +46,10 @@ module.exports = ({ config, notFound, authenticationMiddleware, containerMiddlew
   apiRouter
     .use(methodOverride('X-HTTP-Method-Override'))
     .use(cors())
-
     .use(bodyParser.json())
     .use(compression())
-    .use('/docs', openApiMiddleware(openApiDoc));
-
-    
-
+    .use('/docs', openApiMiddleware(openApiDoc))
+    .use(auth.initialize());
   /*
    * Add your API routes here
    *
@@ -52,13 +61,12 @@ module.exports = ({ config, notFound, authenticationMiddleware, containerMiddlew
    * may cause errors on scaffoldings
    */
 
-  // apiRouter.use('/users', controller('controllers/UsersController'));
-  apiRouter.use(controller('controllers/AuthenticationController.js'));
-  apiRouter.use(authorization.checkPermission());
-
+  apiRouter.use(controller('controllers/AuthController.js'));
+  apiRouter.use(auth.JWTauthenticate());
   apiRouter.use(controller('controllers/UsersController.js'));
-  /* apiRoutes END */
 
+
+  /* apiRoutes END */
   router.use('/api', apiRouter);
   router.use('/', static(path.join(__dirname, './public')));
   router.use('/', notFound);

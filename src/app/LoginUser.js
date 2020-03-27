@@ -1,7 +1,6 @@
 const { Operation } = require('@amberjs/core');
 const User = require('src/domain/User');
-const { authentication } = require('ftauth');
-const hashPassword  = require('../infra/encryption/hashPassword');
+const BreweryAuth = require('brewery-auth-test/src'); 
 
 
 
@@ -13,54 +12,32 @@ class LoginUser extends Operation {
 
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
+    const { clientId, clientSecret } = data;
 
-    const user = new User(data);
-    // console.log(user);
-    const email    = user.email;
-    const password = user.password;
-
+    const config = {
+      dbConfig: {
+        databaseName: process.env.DB_NAME,
+        username: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        dialect: process.env.DB_DIALECT,
+        host: process.env.DB_HOST,
+        authSecret: process.env.SECRET1,
+        authSecret2: process.env.SECRET2,
+      },
+      salt: process.env.SALT,
+      nexmoSecret: process.env.NEXMO_API_SECRET,
+      nexmoKey: process.env.NEXMO_API_KEY,
+      sendgridKey: process.env.SENDGRID_API_KEY,
+      senderEmail: process.env.SENDER_EMAIL,
+      senderSms: process.env.SENDER_SMS
+    };
 
 
     try {
-      const userData = (await this.UserRepository.getAll({ where: { email } }))[0];
-
-      if(userData === undefined) {
-        this.email = false;
- 
-      }
-      else {
-        const setUser =  userData.dataValues;
-        const newUserPassword =  setUser.password;
-
-        const checkPassword =  hashPassword.comparePassword(password, newUserPassword);
-
-        if(!checkPassword) {
-          this.password =  false;
-
-        }else {
-
-          const getUserId =  setUser.id;
-
-          const token =  authentication.generateToken(getUserId, process.env.ACCESS_TOKEN_KEY, process.env.ACCESS_TOKEN_EXP);
-          token.userId =  getUserId;
-
-
-          this.email =  true;
-          this.password =  true;
-          return this.emit(SUCCESS, token);
-        }
-      }
-           
-      const newUser =  {email: this.email, password: this.password};  
-      const user =  await new User(newUser);
-      const result =  user.isAuth();
-
-      if(result) {
-        const error =  new Error;
-        error.message =  result;
-        throw error;  
-      }
-
+      const tokens = await new BreweryAuth(config).login({ clientId, clientSecret });
+      
+      
+      return this.emit(SUCCESS, tokens);
     } catch(error) {
       this.emit(VALIDATION_ERROR, {
         type: 'VALIDATION ERROR',
