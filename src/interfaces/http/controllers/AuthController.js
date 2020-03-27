@@ -14,6 +14,8 @@ class AuthController {
     router.post('/login', this.injector('LoginUser'), this.login);
     router.post('/users', this.injector('CreateUser'), this.create);
     router.post('/clients', this.injector('SignupClient'), this.signup);
+    router.post('/signupResend', this.injector('SignupResend'), this.resend);
+
 
     return router;
   }
@@ -73,6 +75,28 @@ class AuthController {
         res
           .status(Status.CREATED)
           .json({ status: Status.CREATED, details: { message: 'Client Created!', result } });
+      })
+      .on(VALIDATION_ERROR, (error) => {
+        res.status(Status.BAD_REQUEST).json({
+          status: Status.BAD_REQUEST,
+          type: error.type,
+          details: error.details
+        });
+      })
+      .on(ERROR, next);
+
+    operation.execute(req.body);
+  }
+
+  resend(req, res, next) {
+    const { operation } = req;
+    const { SUCCESS, ERROR, VALIDATION_ERROR } = operation.events;
+
+    operation
+      .on(SUCCESS, (result) => {
+        res
+          .status(Status.CREATED)
+          .json({ status: Status.CREATED, details: { message: 'Resend code success!', result } });
       })
       .on(VALIDATION_ERROR, (error) => {
         res.status(Status.BAD_REQUEST).json({
