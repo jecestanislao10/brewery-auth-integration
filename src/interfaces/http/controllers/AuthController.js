@@ -1,9 +1,6 @@
 const { Router } = require('express');
 const Status = require('http-status');
 
-
-
-
 class AuthController {
   
   constructor() {
@@ -16,6 +13,8 @@ class AuthController {
 
     router.post('/login', this.injector('LoginUser'), this.login);
     router.post('/users', this.injector('CreateUser'), this.create);
+    router.post('/clients', this.injector('SignupClient'), this.signup);
+
 
 
     return router;
@@ -42,9 +41,6 @@ class AuthController {
             details: result.details
           }).end();
       });
-
-
-
     operation.execute(req.body);
   }
 
@@ -70,6 +66,27 @@ class AuthController {
     operation.execute(req.body);
   }
 
+  signup(req, res, next) {
+    const { operation } = req;
+    const { SUCCESS, ERROR, VALIDATION_ERROR } = operation.events;
+
+    operation
+      .on(SUCCESS, (result) => {
+        res
+          .status(Status.CREATED)
+          .json({ status: Status.CREATED, details: { message: 'Client Created!', result } });
+      })
+      .on(VALIDATION_ERROR, (error) => {
+        res.status(Status.BAD_REQUEST).json({
+          status: Status.BAD_REQUEST,
+          type: error.type,
+          details: error.details
+        });
+      })
+      .on(ERROR, next);
+
+    operation.execute(req.body);
+  }
 }
 
 module.exports = AuthController;

@@ -1,10 +1,9 @@
 const { Operation } = require('@amberjs/core');
-const User = require('src/domain/User');
 const BreweryAuth = require('brewery-auth-test/src'); 
 
 
 
-class LoginUser extends Operation {
+class SignupClient extends Operation {
   constructor({ UserRepository }) {
     super();
     this.UserRepository = UserRepository;
@@ -12,7 +11,15 @@ class LoginUser extends Operation {
 
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
-    const { clientId, clientSecret } = data;
+    console.log(data);
+
+    /* signup fields:
+        email, 
+        password, 
+        username, 
+        phone, 
+        MFA
+    */
 
     const config = {
       dbConfig: {
@@ -34,10 +41,10 @@ class LoginUser extends Operation {
 
 
     try {
-      const tokens = await new BreweryAuth(config).login({ clientId, clientSecret });
+      const result = await new BreweryAuth(config).signup(data);
       
-      
-      return this.emit(SUCCESS, tokens);
+      console.log(result)
+      return this.emit(SUCCESS, result);
     } catch(error) {
       this.emit(VALIDATION_ERROR, {
         type: 'VALIDATION ERROR',
@@ -47,6 +54,6 @@ class LoginUser extends Operation {
   }
 }
 
-LoginUser.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
+SignupClient.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
 
-module.exports = LoginUser;
+module.exports = SignupClient;
