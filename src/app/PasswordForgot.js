@@ -1,8 +1,10 @@
 const { Operation } = require('@amberjs/core');
-const { authorization } = require('ftauth');
+const Brewery = require('brewery-auth-test/src/index');
+const config = require('config/index.js');
+const auth = new Brewery(config.auth);
 
-class ShowUser extends Operation {
-  constructor({ UserRepository }) {
+class PasswordForgot extends Operation {
+  constructor(UserRepository) {
     super();
     this.UserRepository = UserRepository;
   }
@@ -18,11 +20,10 @@ class ShowUser extends Operation {
     }
 
     try {
-      const user = await this.UserRepository.getById(id, {attributes: {exclude: ['password', 'createdAt', 'updatedAt']}} );
-
-      authorization.setCurrentRole(user.dataValues.role);
-
-      this.emit(SUCCESS, user);
+      const profile = await auth.passwordForgot({
+        clientId: id
+      });
+      this.emit(SUCCESS, profile);
 
     } catch(error) {
       this.emit(NOT_FOUND, {
@@ -33,7 +34,7 @@ class ShowUser extends Operation {
   }
 }
 
-ShowUser.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
+PasswordForgot.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
 
-module.exports = ShowUser;
+module.exports = PasswordForgot;
     

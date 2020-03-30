@@ -3,25 +3,25 @@ const Brewery = require('brewery-auth-test/src/index');
 const config = require('config/index.js');
 const auth = new Brewery(config.auth);
 
-class DeleteUser extends Operation {
+class PasswordChange extends Operation {
   constructor({ UserRepository }) {
     super();
     this.UserRepository = UserRepository;
   }
 
-  async execute(body) {
+  async execute(id, body) {
     const { SUCCESS, ERROR, NOT_FOUND } = this.events;
 
     try {
-      await auth.deleteUser(body);
-      this.emit(SUCCESS);
+      const change = await auth.passwordChange(id, body);
+      this.emit(SUCCESS, change);
     } catch(error) {
       this.emit(ERROR, error);
     }
   }
 }
 
-DeleteUser.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
+PasswordChange.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
 
-module.exports = DeleteUser;
+module.exports = PasswordChange;
     

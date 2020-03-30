@@ -8,13 +8,12 @@ const path = require('path');
 const openApiDoc = require('./openApi.json');
 const {authorization} = require('ftauth'); 
 
-module.exports = ({ config, notFound, checkIfProfile, authenticationMiddleware, containerMiddleware, loggerMiddleware, errorHandler, openApiMiddleware }) => {
+
+
+module.exports = ({ config, notFound,  containerMiddleware, loggerMiddleware, errorHandler, openApiMiddleware }) => {
   const router = Router();
 
   router.use(containerMiddleware);
-
-  router.use(authenticationMiddleware);
-
 
   /* istanbul ignore if */
   if(config.env !== 'test') {
@@ -44,10 +43,6 @@ module.exports = ({ config, notFound, checkIfProfile, authenticationMiddleware, 
    */
 
   // apiRouter.use('/users', controller('controllers/UsersController'));
-  // apiRouter.use(controller('controllers/AuthController.js'));
-  apiRouter.use(controller('controllers/AuthenticationController.js'));
-  apiRouter.use(authorization.checkPermission());
-  apiRouter.use(checkIfProfile);
   apiRouter.use(controller('controllers/UsersController.js'));
   /* apiRoutes END */
 

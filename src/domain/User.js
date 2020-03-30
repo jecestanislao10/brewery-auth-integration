@@ -94,7 +94,7 @@ const User = attributes({
 
   firstLength() {
     if(this.firstName == undefined) {
-      return true
+      return true;
     }
     isTrue = this.firstName.length >= User.MIN_INPUT_LENGTH;
     if(!isTrue) {

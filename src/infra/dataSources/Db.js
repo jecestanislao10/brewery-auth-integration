@@ -1,12 +1,12 @@
-// // FOR PRODUCTION
+// FOR PRODUCTION
 // module.exports = {
 //   name: 'db',
 //   connector : 'sql',
 //   config: {
 //     host: 'remotemysql.com',
-//     username: 'gsHgUjN4jj',
-//     password: process.env.DB_PASSWORD,
-//     database: 'gsHgUjN4jj',
+//     username: 'EnqgAk0Wrg',
+//     password: 'Ac1CKjMlBz',
+//     database: 'EnqgAk0Wrg',
 //     dialect: 'mysql',
 //     isSync: 'true',
 
@@ -17,10 +17,10 @@ module.exports = {
   name: 'db',
   connector : 'sql',
   config: {
-    host: 'remotemysql.com',
-    username: 'I3pzK8hI33',
-    password: process.env.DB_PASSWORD_TEST,
-    database: 'I3pzK8hI33',
+    host: 'localhost',
+    username: 'root',
+    password: 'root',
+    database: 'yourdatabase',
     dialect: 'mysql',
     isSync: 'true',
 
