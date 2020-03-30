@@ -1,5 +1,7 @@
 const { Operation } = require('@amberjs/core');
-const BreweryAuth = require('brewery-auth-test/src'); 
+const config = require('config/index.js');
+const Brewery = require('brewery-auth-test/src'); 
+const auth = new Brewery(config.auth);
 
 
 
@@ -13,27 +15,9 @@ class LoginUser extends Operation {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
     const { clientId, clientSecret } = data;
 
-    const config = {
-      dbConfig: {
-        databaseName: process.env.DB_NAME,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        dialect: process.env.DB_DIALECT,
-        host: process.env.DB_HOST,
-        authSecret: process.env.SECRET1,
-        authSecret2: process.env.SECRET2,
-      },
-      salt: process.env.SALT,
-      nexmoSecret: process.env.NEXMO_API_SECRET,
-      nexmoKey: process.env.NEXMO_API_KEY,
-      sendgridKey: process.env.SENDGRID_API_KEY,
-      senderEmail: process.env.SENDER_EMAIL,
-      senderSms: process.env.SENDER_SMS
-    };
-
 
     try {
-      const tokens = await new BreweryAuth(config).login({ clientId, clientSecret });
+      const tokens = await auth.login({ clientId, clientSecret });
       
       
       return this.emit(SUCCESS, tokens);
