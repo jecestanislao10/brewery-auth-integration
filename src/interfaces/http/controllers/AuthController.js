@@ -18,10 +18,54 @@ class AuthController {
     router.post('/register', this.injector('RegisterClient'), this.register);
     router.post('/loginNewPassword', this.injector('LoginNewPassword'), this.loginNew);
     router.post('/loginMfa', this.injector('LoginMfa'), this.loginMfa);
-
+    router.put('/passwordReset/:id', this.injector('PasswordReset'), this.passwordReset);
+    router.post('/passwordForgot/:id', this.injector('PasswordForgot'), this.passwordForgot);
 
     return router;
   }
+
+  passwordReset(req, res, next) {
+    const { operation } = req;
+
+    const { SUCCESS, ERROR, NOT_FOUND } = operation.events;
+
+    operation
+      .on(SUCCESS, (result) => {
+        res
+          .status(Status.OK)
+          .json({ status: Status.OK, details: { result: result } });
+      }).on(ERROR, (err) => {
+        res.status(400).json({
+          status: 400, 
+          details: err,
+          message: 'code expired/ invalid'
+        });
+      });
+
+    operation.execute(req.params.id, req.body);
+  }
+
+  passwordForgot(req, res, next) {
+    const { operation } = req;
+
+    const { SUCCESS, ERROR, NOT_FOUND } = operation.events;
+
+    operation
+      .on(SUCCESS, (result) => {
+        res
+          .status(Status.OK)
+          .json({ status: Status.OK, details: { result: result } });
+      })
+      .on(NOT_FOUND, (err) => {
+        res.status(400).json({
+          status: 400, 
+          details: err
+        });
+      })
+      .on(ERROR, next);
+
+    operation.execute((req.params.id));
+  };
   
   login(req, res) {
     const { operation } = req;

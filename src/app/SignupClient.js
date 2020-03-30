@@ -1,6 +1,7 @@
 const { Operation } = require('@amberjs/core');
-const BreweryAuth = require('brewery-auth-test/src'); 
-
+const Brewery = require('brewery-auth-test/src/index');
+const config = require('config/index.js');
+const auth = new Brewery(config.auth);
 
 
 class SignupClient extends Operation {
@@ -20,27 +21,8 @@ class SignupClient extends Operation {
         MFA
     */
 
-    const config = {
-      dbConfig: {
-        databaseName: process.env.DB_NAME,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        dialect: process.env.DB_DIALECT,
-        host: process.env.DB_HOST,
-        authSecret: process.env.SECRET1,
-        authSecret2: process.env.SECRET2,
-      },
-      salt: process.env.SALT,
-      nexmoSecret: process.env.NEXMO_API_SECRET,
-      nexmoKey: process.env.NEXMO_API_KEY,
-      sendgridKey: process.env.SENDGRID_API_KEY,
-      senderEmail: process.env.SENDER_EMAIL,
-      senderSms: process.env.SENDER_SMS
-    };
-
 
     try {
-      const auth  = new BreweryAuth(config);
       
       const result = await auth.signup(data);
       const { clientId, confirmationCode } = result;
@@ -49,9 +31,8 @@ class SignupClient extends Operation {
         clientId, 
         confirmationCode
       }, { subject:'The Brewery', text:'Welcome to the brewery' });
-      console.log(confirmation)
 
-      return this.emit(SUCCESS, result);
+      return this.emit(SUCCESS, confirmation);
     } catch(error) {
       this.emit(VALIDATION_ERROR, {
         type: 'VALIDATION ERROR',

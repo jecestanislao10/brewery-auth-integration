@@ -12,27 +12,6 @@ class SignupResend extends Operation {
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
 
-
-
-    const config = {
-      dbConfig: {
-        databaseName: process.env.DB_NAME,
-        username: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        dialect: process.env.DB_DIALECT,
-        host: process.env.DB_HOST,
-        authSecret: process.env.SECRET1,
-        authSecret2: process.env.SECRET2,
-      },
-      salt: process.env.SALT,
-      nexmoSecret: process.env.NEXMO_API_SECRET,
-      nexmoKey: process.env.NEXMO_API_KEY,
-      sendgridKey: process.env.SENDGRID_API_KEY,
-      senderEmail: process.env.SENDER_EMAIL,
-      senderSms: process.env.SENDER_SMS
-    };
-
-
     try {
       const auth  = new BreweryAuth(config);
       
