@@ -15,7 +15,6 @@ class SignupResend extends Operation {
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
 
-
     try {
       const result  = await auth.signupResend(data);
 

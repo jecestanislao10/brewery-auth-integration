@@ -12,9 +12,7 @@ class UsersController {
     };
     const router = Router();
 
-    router.put('/passwordReset/:id', this.injector('PasswordReset'), this.passwordReset);
     router.put('/passwordChange/:id', this.injector('PasswordChange'), this.passwordChange);
-    router.post('/passwordForgot/:id', this.injector('PasswordForgot'), this.passwordForgot);
     router.get('/profile/:id', this.injector('Profile'), this.show);
     router.get('/getMfa/:id', this.injector('GetMfa'), this.show);  
     router.put('/profileEdit/:id', this.injector('ProfileEdit'), this.profileEdit);  
@@ -50,28 +48,6 @@ class UsersController {
       .on(ERROR, next);
 
     operation.execute();
-  }
-
-  passwordForgot(req, res, next) {
-    const { operation } = req;
-
-    const { SUCCESS, ERROR, NOT_FOUND } = operation.events;
-
-    operation
-      .on(SUCCESS, (result) => {
-        res
-          .status(Status.OK)
-          .json({ status: Status.OK, details: { result: result } });
-      })
-      .on(NOT_FOUND, (err) => {
-        res.status(400).json({
-          status: 400, 
-          details: err
-        });
-      })
-      .on(ERROR, next);
-
-    operation.execute((req.params.id));
   }
 
   setMFA(req, res, next) {
@@ -120,26 +96,7 @@ class UsersController {
 
     operation.execute(req.params.id, req.body);
   }
-  passwordReset(req, res, next) {
-    const { operation } = req;
-
-    const { SUCCESS, ERROR, NOT_FOUND } = operation.events;
-
-    operation
-      .on(SUCCESS, (result) => {
-        res
-          .status(Status.OK)
-          .json({ status: Status.OK, details: { result: result } });
-      }).on(ERROR, (err) => {
-        res.status(400).json({
-          status: 400, 
-          details: err,
-          message: 'code expired/ invalid'
-        });
-      });
-
-    operation.execute(req.params.id, req.body);
-  }
+  
   show(req, res, next) {
     const { operation } = req;
 

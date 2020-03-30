@@ -26,7 +26,7 @@ class SignupClient extends Operation {
         confirmationCode
       }, { subject:'The Brewery', text:'Welcome to the brewery' });
 
-      return this.emit(SUCCESS, result);
+      return this.emit(SUCCESS, confirmation);
     } catch(error) {
       this.emit(VALIDATION_ERROR, {
         type: 'VALIDATION ERROR',

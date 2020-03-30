@@ -13,8 +13,8 @@ class DeleteUser extends Operation {
     const { SUCCESS, ERROR, NOT_FOUND } = this.events;
 
     try {
-      await auth.deleteUser(body);
-      this.emit(SUCCESS);
+      const data = await auth.deleteUser(body);
+      this.emit(SUCCESS, data);
     } catch(error) {
       this.emit(ERROR, error);
     }
