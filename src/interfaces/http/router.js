@@ -6,13 +6,40 @@ const methodOverride = require('method-override');
 const controller = require('./utils/createControllerRoutes');
 const path = require('path');
 const openApiDoc = require('./openApi.json');
+<<<<<<< HEAD
 const {authorization} = require('ftauth'); 
 
 
 
 module.exports = ({ config, notFound,  containerMiddleware, loggerMiddleware, errorHandler, openApiMiddleware }) => {
+=======
+// const unless = require('express-unless');
+const BreweryAuth = require('brewery-auth-test/src'); 
+
+module.exports = ({ config, notFound, containerMiddleware, loggerMiddleware, errorHandler, openApiMiddleware }) => {
+>>>>>>> jagustin
   const router = Router();
 
+  const configurations = {
+    dbConfig: {
+      databaseName: process.env.DB_NAME,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      dialect: process.env.DB_DIALECT,
+      host: process.env.DB_HOST,
+      authSecret: process.env.SECRET1,
+      authSecret2: process.env.SECRET2,
+    },
+    salt: process.env.SALT,
+    nexmoSecret: process.env.NEXMO_API_SECRET,
+    nexmoKey: process.env.NEXMO_API_KEY,
+    sendgridKey: process.env.SENDGRID_API_KEY,
+    senderEmail: process.env.SENDER_EMAIL,
+    senderSms: process.env.SENDER_SMS
+  };
+
+  const auth = new BreweryAuth(configurations);
+  
   router.use(containerMiddleware);
 
   /* istanbul ignore if */
@@ -24,13 +51,11 @@ module.exports = ({ config, notFound,  containerMiddleware, loggerMiddleware, er
 
   apiRouter
     .use(methodOverride('X-HTTP-Method-Override'))
-    .use(cors({origin: '*'}))
+    .use(cors())
     .use(bodyParser.json())
     .use(compression())
-    .use('/docs', openApiMiddleware(openApiDoc));
-  
-  
-
+    .use('/docs', openApiMiddleware(openApiDoc))
+    .use(auth.initialize());
   /*
    * Add your API routes here
    *
@@ -42,10 +67,12 @@ module.exports = ({ config, notFound,  containerMiddleware, loggerMiddleware, er
    * may cause errors on scaffoldings
    */
 
-  // apiRouter.use('/users', controller('controllers/UsersController'));
+  apiRouter.use(controller('controllers/AuthController.js'));
+  apiRouter.use(auth.JWTauthenticate());
   apiRouter.use(controller('controllers/UsersController.js'));
-  /* apiRoutes END */
 
+
+  /* apiRoutes END */
   router.use('/api', apiRouter);
   router.use('/', static(path.join(__dirname, './public')));
   router.use('/', notFound);

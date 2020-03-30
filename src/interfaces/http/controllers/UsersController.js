@@ -24,27 +24,6 @@ class UsersController {
     return router;
   }
   
-  login(req, res) {
-    const { operation } = req;
-    const { SUCCESS, VALIDATION_ERROR } = operation.events;
-
-    operation
-      .on(SUCCESS, (result) => {
-        res
-          .status(Status.OK)
-          .json({ status: Status.OK, details: { message: 'Logged in successfully!', result: result} }).end();
-      })
-      .on(VALIDATION_ERROR,  (result) => {
-        res
-          .status(Status.UNAUTHORIZED)
-          .json({
-            status: Status.UNAUTHORIZED,
-            type: result.type,
-            details: result.details
-          }).end();
-      });
-    operation.execute(req.body);
-  }
   /**
    * CRUD sample implementation
    * You may delete the commented code below if you have extended BaseController class
@@ -184,27 +163,7 @@ class UsersController {
     operation.execute((req.params.id));
   }
 
-  create(req, res, next) {
-    const { operation } = req;
-    const { SUCCESS, ERROR, VALIDATION_ERROR } = operation.events;
 
-    operation
-      .on(SUCCESS, (result) => {
-        res
-          .status(Status.CREATED)
-          .json({ status: Status.CREATED, details: { message: 'User Created!', user: result } });
-      })
-      .on(VALIDATION_ERROR, (error) => {
-        res.status(Status.BAD_REQUEST).json({
-          status: Status.BAD_REQUEST,
-          type: error.type,
-          details: error.details
-        });
-      })
-      .on(ERROR, next);
-
-    operation.execute(req.body);
-  }
 
   profileEdit(req, res, next) {
     const { operation } = req;

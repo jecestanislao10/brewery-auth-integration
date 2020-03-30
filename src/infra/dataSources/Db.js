@@ -4,7 +4,6 @@
 //   connector : 'sql',
 //   config: {
 //     host: 'remotemysql.com',
-//     username: 'EnqgAk0Wrg',
 //     password: 'Ac1CKjMlBz',
 //     database: 'EnqgAk0Wrg',
 //     dialect: 'mysql',
@@ -26,3 +25,16 @@ module.exports = {
 
   }
 };
+// module.exports = {
+//   name: 'test-db',
+//   connector : 'sql',
+//   config: {
+//     host: 'remotemysql.com',
+//     username: 'I3pzK8hI33',
+//     password: 'i2kDmahSWR',
+//     database: 'I3pzK8hI33',
+//     dialect: 'mysql',
+//     isSync: 'true',
+
+//   }
+// };
