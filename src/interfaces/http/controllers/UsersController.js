@@ -2,7 +2,6 @@ const { Router } = require('express');
 const Status = require('http-status');
 
 
-
 class UsersController {
   
   constructor() {
@@ -44,9 +43,6 @@ class UsersController {
             details: result.details
           }).end();
       });
-
-
-
     operation.execute(req.body);
   }
   /**
@@ -73,16 +69,6 @@ class UsersController {
         });
       })
       .on(ERROR, next);
-    
-    if(req.role.toLowerCase() !== 'admin'){
-      return res
-        .status(Status.FORBIDDEN)
-        .json({
-          status: Status.FORBIDDEN,
-          type: 'AUTHORIZATION ERROR',
-          details: 'Not Authorized'
-        });
-    }
 
     operation.execute();
   }
@@ -184,7 +170,7 @@ class UsersController {
       .on(SUCCESS, (result) => {
         res
           .status(Status.OK)
-          .json({ status: Status.OK, details: { message: 'User data', result: result } });
+          .json({ status: Status.OK, details: { message: 'List of User', result: result } });
       })
       .on(NOT_FOUND, () => {
         res.status(Status.NOT_FOUND).json({
@@ -206,7 +192,7 @@ class UsersController {
       .on(SUCCESS, (result) => {
         res
           .status(Status.CREATED)
-          .json({ status: Status.CREATED, details: { message: 'User Created!', userId: result.id } });
+          .json({ status: Status.CREATED, details: { message: 'User Created!', user: result } });
       })
       .on(VALIDATION_ERROR, (error) => {
         res.status(Status.BAD_REQUEST).json({

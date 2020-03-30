@@ -67,7 +67,7 @@ _Notice that the boilerplate comes with a small application for user management 
 5. Run the database migrations with `npm run sequelize db:migrate`
 6. Add some seed data to the development database with `npm run sequelize db:seed:all`
 7. Run the application in development mode with `npm run dev`
-8. Access `http://localhost:3000/api/users` and you're ready to go!
+8. Access `http://https://final-amberjs-task.herokuapp.com/api/users` and you're ready to go!
 
 After playing a little bit with the boilerplate and _before_ implementing a real application with it I recommend you to read at least the `Setup` and the `Organization and architecture` sections of our [Wiki](https://github.com/talyssonoc/node-api-boilerplate/wiki). After that you'll be able to remove the example application files running `npm run cleanup`
 

@@ -6,8 +6,7 @@ const methodOverride = require('method-override');
 const controller = require('./utils/createControllerRoutes');
 const path = require('path');
 const openApiDoc = require('./openApi.json');
-const {authorization} = require('ftauth');
-const unless = require('express-unless');
+const {authorization} = require('ftauth'); 
 
 
 
@@ -23,16 +22,14 @@ module.exports = ({ config, notFound,  containerMiddleware, loggerMiddleware, er
 
   const apiRouter = Router();
 
-
   apiRouter
     .use(methodOverride('X-HTTP-Method-Override'))
-    .use(cors())
-
+    .use(cors({origin: '*'}))
     .use(bodyParser.json())
     .use(compression())
     .use('/docs', openApiMiddleware(openApiDoc));
-
-    
+  
+  
 
   /*
    * Add your API routes here

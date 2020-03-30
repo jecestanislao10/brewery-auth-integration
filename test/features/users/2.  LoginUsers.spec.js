@@ -10,7 +10,7 @@ describe('API :: POST /api/login', () => {
 
   context('when credentials are valid', () => {
     it('returns 200', mochaAsync(async () => { 
-      let res = await request('localhost:3000')
+      let res = await request('https://final-amberjs-task.herokuapp.com')
         .post('/api/login')
         .send(getAdminCredentials());
       expect(res.status).to.equal(200);
@@ -18,20 +18,23 @@ describe('API :: POST /api/login', () => {
       setAdminToken(obj.details.result.token);
     }));
     it('returns token with userId', mochaAsync(async () => {
-      let res = await request('localhost:3000').post('/api/login')
+      let res = await request('https://final-amberjs-task.herokuapp.com').post('/api/login')
         .send(getUserCredentials());
       const obj = JSON.parse(res.text);
-      setUserToken(obj.details.result.token);
-      setUserId(obj.details.result.userId);
-      expect(obj.details.result).to.have.property('token');
-      expect(obj.details.result).to.have.property('userId');   
+      const resultObj = obj.details.result;
+      const { token, userId } = resultObj;
+      
+      setUserToken(token);
+      setUserId(userId);
+      expect(resultObj).to.have.property('token');
+      expect(resultObj).to.have.property('userId');   
     }));
 
   });
 
   context('when credentials are invalid', () => {
     it('returns 401', mochaAsync(async () => {
-      let res = await request('localhost:3000').post('/api/login')
+      let res = await request('https://final-amberjs-task.herokuapp.com').post('/api/login')
         .send({
           email: 'jagustin@stratpoint.com',
           password: '1'
