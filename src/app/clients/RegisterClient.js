@@ -3,7 +3,7 @@ const BreweryAuth = require('brewery-auth-test/src');
 
 
 
-class SignupClient extends Operation {
+class RegisterClient extends Operation {
   constructor({ UserRepository }) {
     super();
     this.UserRepository = UserRepository;
@@ -12,13 +12,7 @@ class SignupClient extends Operation {
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
 
-    /* signup fields:
-        email, 
-        password, 
-        username, 
-        phone, 
-        MFA
-    */
+
 
     const config = {
       dbConfig: {
@@ -42,14 +36,9 @@ class SignupClient extends Operation {
     try {
       const auth  = new BreweryAuth(config);
       
-      const result = await auth.signup(data);
-      const { clientId, confirmationCode } = result;
+      const result = await auth.register(data);
 
-      const confirmation = await auth.signupConfirm({ 
-        clientId, 
-        confirmationCode
-      }, { subject:'The Brewery', text:'Welcome to the brewery' });
-      console.log(confirmation)
+
 
       return this.emit(SUCCESS, result);
     } catch(error) {
@@ -61,6 +50,6 @@ class SignupClient extends Operation {
   }
 }
 
-SignupClient.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
+RegisterClient.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
 
-module.exports = SignupClient;
+module.exports = RegisterClient;

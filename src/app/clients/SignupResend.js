@@ -11,7 +11,7 @@ class SignupResend extends Operation {
 
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
-    console.log(data);
+
 
 
     const config = {
