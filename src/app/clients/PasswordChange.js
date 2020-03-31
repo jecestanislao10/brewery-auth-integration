@@ -10,7 +10,7 @@ class PasswordChange extends Operation {
   }
 
   async execute(id, body) {
-    const { SUCCESS, ERROR, NOT_FOUND } = this.events;
+    const { SUCCESS, ERROR } = this.events;
 
     try {
       const change = await auth.passwordChange(id, body);

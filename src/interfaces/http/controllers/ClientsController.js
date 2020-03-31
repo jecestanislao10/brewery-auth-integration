@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const Status = require('http-status');
 
-class AuthController {
+class ClientsController {
   
   constructor() {
     
@@ -228,4 +228,4 @@ class AuthController {
   }
 }
 
-module.exports = AuthController;
+module.exports = ClientsController;

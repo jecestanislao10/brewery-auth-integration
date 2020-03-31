@@ -1,7 +1,8 @@
 const { Operation } = require('@amberjs/core');
-const Brewery = require('brewery-auth-test/src/index');
 const config = require('config/index.js');
+const Brewery = require('brewery-auth-test/src'); 
 const auth = new Brewery(config.auth);
+
 
 
 class SignupClient extends Operation {
@@ -13,18 +14,11 @@ class SignupClient extends Operation {
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
 
-    /* signup fields:
-        email, 
-        password, 
-        username, 
-        phone, 
-        MFA
-    */
 
 
     try {
+      const result  = await auth.signup(data);
       
-      const result = await auth.signup(data);
       const { clientId, confirmationCode } = result;
 
       const confirmation = await auth.signupConfirm({ 

@@ -7,13 +7,21 @@ const controller = require('./utils/createControllerRoutes');
 const path = require('path');
 const openApiDoc = require('./openApi.json');
 // const unless = require('express-unless');
+<<<<<<< HEAD
+const Brewery = require('brewery-auth-test/src'); 
+=======
 const configuration = require('config/index.js');
 const BreweryAuth = require('brewery-auth-test/src'); 
+>>>>>>> 1e70862242b73d4feade9c6ebfdf0263896559ef
 
 module.exports = ({ config, notFound, containerMiddleware, loggerMiddleware, errorHandler, openApiMiddleware }) => {
   const router = Router();
 
+<<<<<<< HEAD
+  const auth = new Brewery(config.auth);
+=======
   const auth = new BreweryAuth(configuration.auth);
+>>>>>>> 1e70862242b73d4feade9c6ebfdf0263896559ef
   
   router.use(containerMiddleware);
 
@@ -42,7 +50,7 @@ module.exports = ({ config, notFound, containerMiddleware, loggerMiddleware, err
    * may cause errors on scaffoldings
    */
 
-  apiRouter.use(controller('controllers/AuthController.js'));
+  apiRouter.use(controller('controllers/ClientsController.js'));
   apiRouter.use(auth.JWTauthenticate());
   apiRouter.use(controller('controllers/UsersController.js'));
 

@@ -1,9 +1,12 @@
 const { Operation } = require('@amberjs/core');
-const Brewery = require('brewery-auth-test/src'); 
 const config = require('config/index.js');
+const Brewery = require('brewery-auth-test/src'); 
 const auth = new Brewery(config.auth);
 
-class LoginMfa extends Operation {
+
+
+
+class LoginNewPassword extends Operation {
   constructor({ UserRepository }) {
     super();
     this.UserRepository = UserRepository;
@@ -11,10 +14,11 @@ class LoginMfa extends Operation {
 
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
-    const { clientId, confirmationCode } = data;
+    const { clientId, newPassword } = data;
+
 
     try {
-      const tokens = await auth.loginMfa({ clientId, confirmationCode });
+      const tokens = await auth.loginNewPasswordRequired({ clientId, newPassword });
 
       
       return this.emit(SUCCESS, tokens);
@@ -27,6 +31,6 @@ class LoginMfa extends Operation {
   }
 }
 
-LoginMfa.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
+LoginNewPassword.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
 
-module.exports = LoginMfa;
+module.exports = LoginNewPassword;

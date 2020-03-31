@@ -10,7 +10,7 @@ class DeleteUser extends Operation {
   }
 
   async execute(body) {
-    const { SUCCESS, ERROR, NOT_FOUND } = this.events;
+    const { SUCCESS, ERROR } = this.events;
 
     try {
       const data = await auth.deleteUser(body);

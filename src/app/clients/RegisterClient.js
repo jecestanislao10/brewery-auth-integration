@@ -1,9 +1,11 @@
 const { Operation } = require('@amberjs/core');
-const BreweryAuth = require('brewery-auth-test/src'); 
+const config = require('config/index.js');
+const Brewery = require('brewery-auth-test/src'); 
+const auth = new Brewery(config.auth);
 
 
 
-class SignupResend extends Operation {
+class RegisterClient extends Operation {
   constructor({ UserRepository }) {
     super();
     this.UserRepository = UserRepository;
@@ -12,12 +14,10 @@ class SignupResend extends Operation {
   async execute(data) {
     const { SUCCESS, VALIDATION_ERROR } = this.events;
 
+
     try {
-      const auth  = new BreweryAuth(config);
+      const result  = auth.register(data);
       
-      const result = await auth.signupResend(data);
-
-
 
       return this.emit(SUCCESS, result);
     } catch(error) {
@@ -29,6 +29,6 @@ class SignupResend extends Operation {
   }
 }
 
-SignupResend.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
+RegisterClient.setEvents(['SUCCESS', 'ERROR', 'VALIDATION_ERROR', 'NOT_FOUND']);
 
-module.exports = SignupResend;
+module.exports = RegisterClient;
