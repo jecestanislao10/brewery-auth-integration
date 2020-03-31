@@ -12,11 +12,11 @@ class UsersController {
     };
     const router = Router();
 
-    router.put('/passwordChange/:id', this.injector('PasswordChange'), this.passwordChange);
-    router.get('/profile/:id', this.injector('Profile'), this.show);
-    router.get('/getMfa/:id', this.injector('GetMfa'), this.show);  
-    router.put('/profileEdit/:id', this.injector('ProfileEdit'), this.profileEdit);  
-    router.put('/setMfa/:id', this.injector('SetMfa'), this.setMFA);      
+    router.put('/passwordChange', this.injector('PasswordChange'), this.passwordChange);
+    router.get('/profile', this.injector('Profile'), this.show);
+    router.get('/getMfa', this.injector('GetMfa'), this.show);  
+    router.put('/profileEdit', this.injector('ProfileEdit'), this.profileEdit);  
+    router.put('/setMfa', this.injector('SetMfa'), this.setMFA);      
     router.delete('/deleteUser', this.injector('DeleteUser'), this.delete);
 
     return router;
@@ -28,29 +28,7 @@ class UsersController {
    * The following methods are already inherited upon extending BaseController class from @amberjs/core
    */
 
-  index(req, res, next) {
-    const { operation } = req;
-    const { SUCCESS, ERROR, NOT_FOUND} = operation.events;
-
-    operation
-      .on(SUCCESS, (result) => {
-        res
-          .status(Status.OK)
-          .json({ status: Status.OK, details: { message: 'List of Users', result: result } });
-      })
-      .on(NOT_FOUND, (error) => {
-        res.status(Status.NOT_FOUND).json({
-          status: Status.NOT_FOUND,
-          type: 'NotFoundError',
-          details: error.details
-        });
-      })
-      .on(ERROR, next);
-
-    operation.execute();
-  }
-
-  setMFA(req, res, next) {
+  setMFA(req, res) {
     const { operation } = req;
 
     const { SUCCESS, ERROR, NOT_FOUND } = operation.events;
@@ -59,28 +37,30 @@ class UsersController {
       .on(SUCCESS, (result) => {
         res
           .status(Status.OK)
-          .json({ status: Status.OK, details: { result: result } });
+          .json({ status: Status.OK, message: 'updated MFA', details: result });
       })
       .on(NOT_FOUND, (err) => {
         res.status(400).json({
           status: 400, 
+          type: 'NOT FOUND ERROR',
           details: err
         });
       })
       .on(ERROR, (err) => {
         res.status(400).json({
+          type: 'VALIDATION ERROR',
           status: 400, 
           details: err
         });
       });
 
-    operation.execute(req.params.id, req.body);
+    operation.execute(req.userId, req.body);
   }
 
-  passwordChange(req, res, next) {
+  passwordChange(req, res) {
     const { operation } = req;
 
-    const { SUCCESS, ERROR, NOT_FOUND } = operation.events;
+    const { SUCCESS, ERROR} = operation.events;
 
     operation
       .on(SUCCESS, (result) => {
@@ -89,12 +69,13 @@ class UsersController {
           .json({ status: Status.OK, details: { result: result } });
       }).on(ERROR, (err) => {
         res.status(400).json({
+          type: 'VALIDATION ERROR',
           status: 400, 
           details: err
         });
       });
 
-    operation.execute(req.params.id, req.body);
+    operation.execute(req.userId, req.body);
   }
   
   show(req, res, next) {
@@ -106,7 +87,7 @@ class UsersController {
       .on(SUCCESS, (result) => {
         res
           .status(Status.OK)
-          .json({ status: Status.OK, details: { message: 'List of User', result: result } });
+          .json({ status: Status.OK, details: result });
       })
       .on(NOT_FOUND, () => {
         res.status(Status.NOT_FOUND).json({
@@ -117,33 +98,34 @@ class UsersController {
       })
       .on(ERROR, next);
 
-    operation.execute((req.params.id));
+    operation.execute(req.userId);
   }
 
 
 
-  profileEdit(req, res, next) {
+  profileEdit(req, res) {
     const { operation } = req;
 
-    const { SUCCESS, ERROR, NOT_FOUND } = operation.events;
+    const { SUCCESS, ERROR} = operation.events;
 
     operation
       .on(SUCCESS, (result) => {
         res
           .status(Status.OK)
-          .json({ status: Status.OK, details: { result: result } });
+          .json({ status: Status.OK,  message: result });
       }).on(ERROR, (err) => {
         res.status(400).json({
           status: 400, 
+          type: 'VALIDATION ERROR',
           details: err
         });
       });
 
-    operation.execute(req.params.id, req.body);
+    operation.execute(req.userId, req.body);
   }
-  delete(req, res, next) {
+  delete(req, res) {
     const { operation } = req;
-    const { SUCCESS, ERROR,  NOT_FOUND } = operation.events;
+    const { SUCCESS, ERROR} = operation.events;
 
     operation
       .on(SUCCESS, () => {
@@ -152,7 +134,7 @@ class UsersController {
           .json({status: Status.OK, details: { message: 'Successfully deleted!' }}).end();
       })
       .on(ERROR, (error) => {
-        res.status(Status.BAD_REQUEST).json({Status: 400, Error: error});
+        res.status(Status.BAD_REQUEST).json({Status: 400, type: 'VALIDATION ERROR',  Error: error});
       });
 
     operation.execute(req.body);

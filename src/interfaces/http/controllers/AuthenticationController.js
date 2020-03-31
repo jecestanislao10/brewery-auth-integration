@@ -24,10 +24,10 @@ class ClientsController {
     return router;
   }
 
-  passwordReset(req, res, next) {
+  passwordReset(req, res) {
     const { operation } = req;
 
-    const { SUCCESS, ERROR, NOT_FOUND } = operation.events;
+    const { SUCCESS, ERROR } = operation.events;
 
     operation
       .on(SUCCESS, (result) => {
@@ -36,8 +36,7 @@ class ClientsController {
           .json({ status: Status.OK, details: { result: result } });
       }).on(ERROR, (err) => {
         res.status(400).json({
-          status: 400, 
-          details: err,
+          status: 400,
           message: 'code expired/ invalid'
         });
       });
@@ -65,7 +64,7 @@ class ClientsController {
       .on(ERROR, next);
 
     operation.execute((req.params.id));
-  };
+  }
   
   login(req, res) {
     const { operation } = req;

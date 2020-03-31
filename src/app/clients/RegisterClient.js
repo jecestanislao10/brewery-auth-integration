@@ -1,9 +1,5 @@
 const { Operation } = require('@amberjs/core');
-const config = require('config/index.js');
-const Brewery = require('brewery-auth-test/src'); 
-const auth = new Brewery(config.auth);
-
-
+const auth = require('src/infra/authentication/BreweryAuth.js');
 
 class RegisterClient extends Operation {
   constructor({ UserRepository }) {
@@ -17,7 +13,7 @@ class RegisterClient extends Operation {
 
     try {
       const result  = auth.register(data);
-      
+      console.log(result);
 
       return this.emit(SUCCESS, result);
     } catch(error) {

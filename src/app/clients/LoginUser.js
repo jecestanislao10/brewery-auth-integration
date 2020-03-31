@@ -1,9 +1,5 @@
 const { Operation } = require('@amberjs/core');
-const config = require('config/index.js');
-const Brewery = require('brewery-auth-test/src'); 
-const auth = new Brewery(config.auth);
-
-
+const auth = require('src/infra/authentication/BreweryAuth.js');
 
 class LoginUser extends Operation {
   constructor({ UserRepository }) {
@@ -24,7 +20,7 @@ class LoginUser extends Operation {
     } catch(error) {
       this.emit(VALIDATION_ERROR, {
         type: 'VALIDATION ERROR',
-        details: error.message
+        details: error.message || error
       });
     }
   }

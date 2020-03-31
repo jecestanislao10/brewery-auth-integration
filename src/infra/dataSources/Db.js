@@ -12,19 +12,19 @@
 //   }
 // };
 // FOR TESTING
-// module.exports = {
-//   name: 'db',
-//   connector : 'sql',
-//   config: {
-//     host: 'localhost',
-//     username: 'root',
-//     password: 'root',
-//     database: 'yourdatabase',
-//     dialect: 'mysql',
-//     isSync: 'true',
+module.exports = {
+  name: 'test-db',
+  connector : 'sql',
+  config: {
+    host: 'localhost',
+    username: 'root',
+    password: 'root',
+    database: 'yourdatabase',
+    dialect: 'mysql',
+    isSync: 'true',
 
-//   }
-// };
+  }
+};
 // module.exports = {
 //   name: 'test-db',
 //   connector : 'sql',
@@ -38,16 +38,16 @@
 
 //   }
 // };
-module.exports = {
-  name: 'test-db',
-  connector : 'sql',
-  config: {
-    host: 'localhost',
-    username: 'postgres',
-    password: 'root',
-    database: 'dev-database',
-    dialect: 'postgres',
-    isSync: 'true',
+// module.exports = {
+//   name: 'test-db',
+//   connector : 'sql',
+//   config: {
+//     host: 'localhost',
+//     username: 'postgres',
+//     password: 'root',
+//     database: 'dev-database',
+//     dialect: 'postgres',
+//     isSync: 'true',
 
-  }
-};
+//   }
+// };

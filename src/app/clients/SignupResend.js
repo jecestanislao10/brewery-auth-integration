@@ -1,10 +1,5 @@
 const { Operation } = require('@amberjs/core');
-const config = require('config/index.js');
-const Brewery = require('brewery-auth-test/src'); 
-const auth = new Brewery(config.auth);
-
-
-
+const auth = require('src/infra/authentication/BreweryAuth.js');
 
 class SignupResend extends Operation {
   constructor({ UserRepository }) {
