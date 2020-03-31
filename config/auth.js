@@ -10,8 +10,8 @@ module.exports = {
     host: db.config.host
   },
   salt: process.env.SALT,
-  tokenSecret: process.env.SECRET1,
-  refreshSecret: process.env.SECRET2,
+  tokenSecret: process.env.ACCESS_TOKEN_SECRET,
+  refreshSecret: process.env.REFRESH_TOKEN_SECRET,
   nexmoSecret: process.env.NEXMO_API_SECRET,
   nexmoKey: process.env.NEXMO_API_KEY,
   sendgridKey: process.env.SENDGRID_API_KEY,

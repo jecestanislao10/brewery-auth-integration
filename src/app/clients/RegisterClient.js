@@ -16,8 +16,8 @@ class RegisterClient extends Operation {
 
 
     try {
-      const result  = auth.register(data);
-      
+      const result  = await auth.register(data);
+
 
       return this.emit(SUCCESS, result);
     } catch(error) {
